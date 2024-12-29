@@ -222,7 +222,7 @@ or
 
 Let me know what you find!
 
-cmake fix 
+cmake fix
 
 The output indicates you already have `libjsoncpp.so.26`, but `cmake` still complains about it. This could mean the linker cache is outdated or there's an issue with `cmake` specifically. Let's fix this systematically:
 
@@ -277,5 +277,59 @@ cmake --version
 If this still fails, share the output of:
 ```bash
 ldd $(which cmake)
-``` 
+```
 This will help diagnose unresolved dependencies.
+
+
+Yes, on Arch Linux and other distributions using pacman, you can achieve similar functionality to apt autoremove for cleaning up orphaned (unneeded) packages. Here's how:
+1. Check for Orphaned Packages
+
+Use the pacman command to find packages that were installed as dependencies but are no longer required:
+
+pacman -Qdt
+
+    -Q: Query installed packages.
+    -d: Check dependencies.
+    -t: List packages that are not explicitly required by any other package (orphans).
+
+2. Remove Orphaned Packages
+
+To remove these orphaned packages, you can use:
+
+sudo pacman -Rns $(pacman -Qdtq)
+
+    -Rns:
+        -R: Remove.
+        -n: Remove configuration files as well.
+        -s: Remove unused dependencies (recursive).
+    $(pacman -Qdtq):
+        The q option ensures only the package names are passed to -Rns.
+
+This command safely removes orphaned packages and their dependencies.
+3. Use paccache for Cached Packages
+
+To clean up cached package files (not exactly like autoremove, but useful for saving disk space):
+
+sudo paccache -r
+
+    Removes older versions of installed packages, keeping only the most recent ones.
+    You can specify how many versions to keep with -k (default is 3):
+
+    sudo paccache -rk1
+
+4. Use paru or yay (AUR Helpers)
+
+If you use AUR helpers like paru or yay, they also provide options to remove unneeded dependencies:
+
+paru -Rns $(paru -Qdtq)
+
+or
+
+yay -Rns $(yay -Qdtq)
+
+Best Practices
+
+    Always review the list of packages before confirming their removal to avoid breaking your system.
+    For additional disk cleanup, periodically clear the pacman cache with sudo paccache -r.
+
+Let me know if you’d like a detailed explanation of any command!
