@@ -1,7 +1,10 @@
 {
   "layer": "top",
   "position": "top",
-  "height": 26,
+  "height": 10,
+  "margin-bottom":0,
+  "margin-top":0,
+
   "modules-left": [
     "clock",
     "network",
@@ -9,33 +12,49 @@
     "custom/pomodoro",
   ],
   "modules-center": [
-    "hyprland/workspaces"
+    "hyprland/workspaces",
+    "sway/workspaces",
+        "sway/window",
   ],
   "modules-right": [
     "memory",
     "cpu",
     "battery",
     "disk",
-    "tray"
+    "tray",
+    "custom/notification",
   ],
 
+"sway/mode": {
+    "format": "<span style=\"italic\">{}</span>"
+},
+"sway/window": {
+	    "format": "<span style=\"italic\">{title}</span>",
+ 		//"max-length": 333,
+ 		"max-length": 20,
+	    "seperate-outputs": true
+  },
   "hyprland/workspaces": {
     "disable-scroll": true,
     "format": "{name}",
     "interval": 1
   },
-  "clock": {
-    "format": "{:%I:%M %p %a %d/%m/%y}",
-    "tooltip": false
-  },
+"clock": {
+    "locale": "C",
+    "format": "<span foreground='#FFFFFF'>  </span><span>{:%I:%M %p}</span>",
+    "format-alt": "  {:%a, %b %d}" // Icon: calendar-alt,
+},
+	"custom/power": {
+		"format": "󰐥",
+		"on-click": "/home/loki/bin/waybar-power.sh"},
 
   "custom/pomodoro": {
-    "format": "{} {icon}",
-    "return-type": "json",
     "format-icons": {
       "work": "󰔟",
       "break": ""
     },
+    "format": "{icon}{}",
+    "return-type": "json",
     "exec": "waybar-module-pomodoro -w 50 -s 10 -l 20 --no-icons",
     "on-click": "waybar-module-pomodoro toggle",
     "on-click-right": "waybar-module-pomodoro reset"
@@ -54,40 +73,39 @@
     "scroll-step": 5,
     "on-click": "pavucontrol"
   },
-  "backlight": {
-    "device": "intel_backlight",
-    "format": "{percent}% {icon}",
-    "format-icons": ["", ""]
-  },
   "memory": {
     "interval": 1,
-    "format": "Mem {}%"
+    "format": "<span foreground='#2aa198'>󰍛 </span> Mem {}%",
+    "warning": 70,
+    "critical": 90
   },
   "cpu": {
     "interval": 1,
-    "format": "CPU {usage:2}%"
+    "format": "<span foreground='#6c71c4'> </span>  CPU{usage:2}%",
+    "on-click": "kitty -e 'htop'"
   },
-  "battery": {
-    "states": {
-      "good": 80,
-      "warning": 50,
-      "critical": 20
-    },
-    "format": "{icon}   {capacity}%",
-    "format-icons": [
-      "",
-      "",
-      "",
-      "",
-      ""
-    ],
-    "format-charging": "󰂄 {capacity}%"
-  },
-  "network": {
-    "format": "{ifname}",
-    "format-wifi": " ",
-    "format-ethernet": "󰈀",
-    "format-disconnected": " ",
+"battery": {
+        	"states": {
+            		"warning": 30,
+            		"critical": 15,
+        	},
+        	"format": "{icon} {capacity}%",
+        	"format-charging": "󰂄 {capacity}%",
+        	"format-plugged": "󰂄{capacity}%",
+        	"format-alt": "{time} {icon}",
+        	"format-full": "󱈑 {capacity}%",
+        	"format-icons": ["󱊡", "󱊢", "󱊣"]
+	},
+"network": {
+  "interval": 2,
+  "format-wifi": "   {signalStrength}%",
+  "format-ethernet": "",
+  "format-linked": " {ipaddr}",
+  "format-disconnected": "   Disconnected",
+  "format-disabled": "",
+  "max-length": 20,
+  "min-length": 6,
+  "format-alt": "{essid}",
     "tooltip-format": " {ifname} via {gwaddri}",
     "tooltip-format-wifi": "  {ifname} @ {essid}\nIP: {ipaddr}\nStrength: {signalStrength}%\nFreq: {frequency}MHz\nUp: {bandwidthUpBits} Down: {bandwidthDownBits}",
     "tooltip-format-ethernet": " {ifname}\nIP: {ipaddr}\n up: {bandwidthUpBits} down: {bandwidthDownBits}",
@@ -96,12 +114,39 @@
   },
   "disk": {
     "interval": 10,
-    "format": "Disk {percentage_used:2}%",
+    "format": "<span foreground='#b58900'> </span> Disk {percentage_used:2}%",
     "path": "/"
   },
   "tray": {
-    "icon-size": 17,
-    "spacing": 7
-  }
+    "icon-size": 15,
+    "spacing": 5
+  },
+   "custom/notification": {
+    "tooltip": false,
+    "format": "<span foreground='#E69875'> {icon} </span>",
+    "format-icons": {
+      "notification": "<span foreground='red'><sup></sup></span>",
+      "none": "",
+      "dnd-notification": "<span foreground='red'><sup></sup></span>",
+      "dnd-none": "",
+      "inhibited-notification": "<span foreground='red'><sup></sup></span>",
+      "inhibited-none": "",
+      "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
+      "dnd-inhibited-none": ""
+    },
+    "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "escape": true
+  },
+"backlight": {
+    // "device": "acpi_video1",
+    "format": "{icon}&#8239;{percent}%",
+    "format-icons": ["", ""],
+    "on-scroll-down": "brightnessctl -c backlight set 1%-",
+    "on-scroll-up": "brightnessctl -c backlight set +1%"
+},
 }
 

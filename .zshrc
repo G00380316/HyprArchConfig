@@ -53,6 +53,7 @@ setopt hist_ignore_all_dups
 setopt hist_save_no_dups
 setopt hist_ignore_dups
 setopt hist_find_no_dups
+setopt correct
 
 ### Custom aliases and Keybinds ###
 alias ll='ls -l'
@@ -232,4 +233,3 @@ export PATH=$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
 ## Completion scripts setup. Remove the following line to uninstall
 [[ -f /home/enoch/.dart-cli-completion/zsh-config.zsh ]] && . /home/enoch/.dart-cli-completion/zsh-config.zsh || true
 ## [/Completion]
-
